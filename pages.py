@@ -72,7 +72,7 @@ def accueil():
 
 
     with col3:
-        st.image("logo.png", width=330)
+        st.image("logo.png", width=350)
     st.markdown(
         f"<h1 style='color:#FFFFFF; text-align: center;'>Bienvenue sur notre Système de Recommandation</h1>",
         unsafe_allow_html=True
