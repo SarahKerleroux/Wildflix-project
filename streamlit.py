@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from pages_leo import *
+from pages import *
 from streamlit_option_menu import option_menu
 
 df = pd.read_csv('last_df.csv')
