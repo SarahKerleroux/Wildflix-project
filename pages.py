@@ -272,11 +272,14 @@ def accueil():
             with col:
                 st.image(base_url + movie['poster_path'])
                 st.button(f"Voir {movie['title']}", key=f"recommendation_{idx}", on_click= clik_film, args=[int(recommended_movies.iloc[[idx]].index[0])])
-                    
+
+
+
 def clik_film(index_movie):
     print(index_movie)
     st.session_state["index_movie"] = index_movie
           
+
 
 def match():
     # Charger les datasets
@@ -418,6 +421,7 @@ def match():
     div.stButton > button::-moz-focus-inner {
         border: 0; /* Supprime les bordures internes par défaut sur Firefox */
     }
+    
     </style>
     """,
     unsafe_allow_html=True
