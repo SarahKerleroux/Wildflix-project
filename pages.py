@@ -278,6 +278,164 @@ def clik_film(index_movie):
     st.session_state["index_movie"] = index_movie
           
 
+def match():
+    # Charger les datasets
+    df_movies = pd.read_csv("last_df.csv").reset_index()
+    df_recommendations = pd.read_csv("df_20_000_recomandation.csv")
+    base_url = 'https://image.tmdb.org/t/p/original'
+
+    st.markdown(
+        f"<h1 style='color:#FFD700; text-align: center;'>En duo trouvez votre match !</h1>",
+        unsafe_allow_html=True
+    )
+    st.write('')
+    st.write('')
+
+    # Styles personnalisés pour les selectbox et boutons
+    st.markdown("""
+        <style>
+        .stSelectbox {
+            color: rgb(255, 255, 255);
+            background-color: gray;
+            border-radius: 5px;
+            border: 2px solid #007BFF;
+            box-shadow: 0px 0px 10px #007BFF;
+        }
+        .stSelectbox > div[data-baseweb="select"] > div {
+            font-family: inherit;
+            font-size: 16px;
+            color: white;
+            border: 1px solid #007BFF;
+        }
+        div.stButton > button {
+            background-color: rgba(0, 0, 0, 0.80);
+            color: white;
+            border: 2px solid rgba(0, 123, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.8);
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 auto;
+            display: block;
+        }
+        div.stButton > button:hover {
+            box-shadow: 0 0 20px rgba(0, 123, 255, 1);
+            background: rgba(0, 123, 255, 0.5);
+            color: white;
+            border: 2px solid rgba(0, 123, 255, 0.8);
+        }
+        div.stButton > button:active {
+            box-shadow: inset 0 0 10px rgba(0, 123, 255, 0.8);
+            background: rgba(0, 123, 255, 0.8);
+            color: white;
+            border: 2px solid rgba(0, 123, 255, 1);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Sélection des deux films
+    titles = df_movies['title'].unique()
+    col1, col2 = st.columns(2)
+
+    st.write('')
+    st.write('')
+    
+    with col1:
+        selected_movie_1 = st.selectbox("Sélectionnez le premier film :", options=titles, key="movie_1")
+    with col2:
+        selected_movie_2 = st.selectbox("Sélectionnez le second film :", options=titles, key="movie_2")
+
+    if selected_movie_1 and selected_movie_2:
+        # Obtenir les recommandations pour chaque film
+        recommendations_1 = df_recommendations[df_recommendations['title'] == selected_movie_1].iloc[0]
+        recommendations_2 = df_recommendations[df_recommendations['title'] == selected_movie_2].iloc[0]
+
+        # Extraire les titres recommandés
+        recommended_titles_1 = [
+            recommendations_1[col] for col in recommendations_1.index if "Recommendation" in col and pd.notna(recommendations_1[col])
+        ]
+        recommended_titles_2 = [
+            recommendations_2[col] for col in recommendations_2.index if "Recommendation" in col and pd.notna(recommendations_2[col])
+        ]
+
+        # Trouver les films communs ou proches
+        common_recommendations = set(recommended_titles_1).intersection(recommended_titles_2)
+        all_recommendations = list(common_recommendations)
+
+        if len(all_recommendations) < 5:
+            # Ajouter des recommandations uniques si nécessaire
+            unique_recommendations = set(recommended_titles_1).union(recommended_titles_2)
+            all_recommendations += list(unique_recommendations - common_recommendations)[:5 - len(all_recommendations)]
+
+        # Obtenir les détails des films recommandés
+        recommended_movies = df_movies[df_movies['title'].isin(all_recommendations)]
+
+        # Affiche les recommandations
+        st.markdown("<h1 style='color:#FFFFFF; text-align: center;'> 🍿 Films recommandés :</h1>", unsafe_allow_html=True)
+        st.markdown(
+    """
+    <style>
+    div.stButton > button {
+        background-color: rgba(0, 0, 0, 0.80); /* Fond noir avec 80% d'opacité */
+        color: white; /* Texte blanc */
+        border: 2px solid rgba(0, 123, 255, 0.8); /* Bord bleu lumineux */
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.8); /* Éclairage bleu stylisé */
+        font-size: 16px; /* Taille du texte */
+        padding: 10px 20px; /* Espacement interne */
+        border-radius: 5px; /* Coins arrondis */
+        cursor: pointer; /* Curseur pointeur */
+        margin: 0 auto; /* Centrer horizontalement */
+        display: block; /* Occuper tout l'espace disponible */
+    }
+
+    /* Survol */
+    div.stButton > button:hover {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 1); /* Éclairage bleu plus intense au survol */
+        background: rgba(0, 123, 255, 0.5); /* Fond bleu clair */
+        color: white; /* Texte blanc */
+        border: 2px solid rgba(0, 123, 255, 0.8); /* Bord bleu lumineux */
+    }
+
+    /* État actif (clic) */
+    div.stButton > button:active {
+        box-shadow: inset 0 0 10px rgba(0, 123, 255, 0.8); /* Éclairage intérieur bleu */
+        background: rgba(0, 123, 255, 0.8); /* Fond bleu foncé */
+        color: white; /* Texte blanc */
+        border: 2px solid rgba(0, 123, 255, 1); /* Bord bleu intense */
+    }
+
+    /* État focus (après clic ou navigation clavier) */
+    div.stButton > button:focus {
+        outline: none !important; /* Supprime le contour rouge par défaut */
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.8); /* Éclairage bleu */
+        border: 2px solid rgba(0, 123, 255, 1) !important; /* Bord bleu intense */
+        background: rgba(0, 123, 255, 0.8); /* Fond bleu */
+        color: white !important; /* Texte blanc */
+    }
+
+    /* Suppression des bordures internes sur Firefox */
+    div.stButton > button::-moz-focus-inner {
+        border: 0; /* Supprime les bordures internes par défaut sur Firefox */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+        cols = st.columns(5)
+        for idx, (col, (_, movie)) in enumerate(zip(cols, recommended_movies.iterrows())):
+            with col:
+                st.image(base_url + movie['poster_path'], use_container_width=True)  # Utilisation de use_container_width
+                st.button(
+                    f"Voir {movie['title']}",
+                    key=f"recommendation_{idx}",
+                    on_click=clik_film,
+                    args=[int(movie['index'])]
+                )
+
+
+
 def top():
     st.markdown(
         "<h1 style='color: #FFD700; text-align: center;'>Découvrez le Top 10</h1>", 
@@ -1308,3 +1466,5 @@ def projet():
             </style>
             <hr>
             """, unsafe_allow_html=True)#ligne horizontale
+        
+
