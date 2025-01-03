@@ -1,26 +1,26 @@
 import pandas as pd
 import streamlit as st
 import base64
-import streamlit as st
-import ast
 
+@st.cache_data
+def load_data():
+    df = pd.read_csv("last_df.csv")
+    df_genre = pd.read_csv("df_for_genre.csv")
 
-df = pd.read_csv("last_df.csv")
-df_genre = pd.read_csv("df_for_genre.csv")
+    fr = df[df["original_language"] == "fr"].sort_values(by="popularity", ascending=False)
+    en = df[df["original_language"] == "en"].sort_values(by="popularity", ascending=False)
+    it = df[df["original_language"] == "it"].sort_values(by="popularity", ascending=False)
+    ja = df[df["original_language"] == "ja"].sort_values(by="popularity", ascending=False)
+    ko = df[df["original_language"] == "ko"].sort_values(by="popularity", ascending=False)
 
-fr = df[df["original_language"] == "fr"].sort_values(by="popularity", ascending=False)
-en = df[df["original_language"] == "en"].sort_values(by="popularity", ascending=False)
-it = df[df["original_language"] == "it"].sort_values(by="popularity", ascending=False)
-ja = df[df["original_language"] == "ja"].sort_values(by="popularity", ascending=False)
-ko = df[df["original_language"] == "ko"].sort_values(by="popularity", ascending=False)
+    nouveautes_fr = df[df["original_language"] == "fr"].sort_values(by="release_date", ascending=False).head(10)
+    nouveautes_en = df[df["original_language"] == "en"].sort_values(by="release_date", ascending=False).head(10)
+    nouveautes_it = df[df["original_language"] == "it"].sort_values(by="release_date", ascending=False).head(10)
+    nouveautes_ja = df[df["original_language"] == "ja"].sort_values(by="release_date", ascending=False).head(10)
+    nouveautes_ko = df[df["original_language"] == "ko"].sort_values(by="release_date", ascending=False).head(10)
+    return df, df_genre, fr, en, it, ja, ko, nouveautes_fr, nouveautes_en, nouveautes_it, nouveautes_ja, nouveautes_ko
 
-nouveautes_fr = df[df["original_language"] == "fr"].sort_values(by="release_date", ascending=False).head(10)
-nouveautes_en = df[df["original_language"] == "en"].sort_values(by="release_date", ascending=False).head(10)
-nouveautes_it = df[df["original_language"] == "it"].sort_values(by="release_date", ascending=False).head(10)
-nouveautes_ja = df[df["original_language"] == "ja"].sort_values(by="release_date", ascending=False).head(10)
-nouveautes_ko = df[df["original_language"] == "ko"].sort_values(by="release_date", ascending=False).head(10)
-
-
+df, df_genre, fr, en, it, ja, ko, nouveautes_fr, nouveautes_en, nouveautes_it, nouveautes_ja, nouveautes_ko = load_data()
 
 def add_background(image_path):
     """

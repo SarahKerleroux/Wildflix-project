@@ -1,15 +1,11 @@
 import streamlit as st
+st.set_page_config(layout="wide")
 import pandas as pd
-from pages import *
+from pages import accueil, top, nouveautes, genre, langue, projet
 from streamlit_option_menu import option_menu
 
-df = pd.read_csv('last_df.csv')
-
-# Enlever les marges sur streamlit
-st.set_page_config(layout="wide")
-
 # Menu horizontal 
-pages = option_menupages = option_menu(
+page = option_menu(
     None,  # Pas de titre pour le menu
     ["Accueil", "Top 10 aujourd'hui", "Nouveautés", "Genre", "Langue", "Notre projet"],  # Options du menu
     icons=['house', 'item_icon', 'item_icon', 'list', 'list', 'info-circle'],  # Icônes correspondantes
@@ -19,17 +15,17 @@ pages = option_menupages = option_menu(
     styles={"nav-link-selected": {"background-color": "#007bff", "color": "white"}}
     )
       
-if pages=="Accueil":
+if page=="Accueil":
     accueil()
-elif pages=="Top 10 aujourd'hui": 
+elif page=="Top 10 aujourd'hui": 
     top()
-elif pages=="Nouveautés":
+elif page=="Nouveautés":
     nouveautes()
-elif pages=="Genre":
+elif page=="Genre":
     genre()
-elif pages=="Langue":
+elif page=="Langue":
     langue()
-elif pages=="Notre projet":
+elif page=="Notre projet":
     projet()
 else :
     accueil()
