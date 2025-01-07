@@ -1,10 +1,11 @@
 import pandas as pd
 import streamlit as st
 import base64
+import html
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("last_df.csv")
+    df = pd.read_csv("last_df_bon.csv")
     df_genre = pd.read_csv("df_for_genre.csv")
 
     fr = df[df["original_language"] == "fr"].sort_values(by="popularity", ascending=False)
@@ -44,7 +45,7 @@ def add_background(image_path):
 
 def accueil():
     
-    df_movies = pd.read_csv("last_df.csv").reset_index()
+    df_movies = pd.read_csv("last_df_bon.csv").reset_index()
     df_recommendations = pd.read_csv("df_20_000_recomandation.csv")
     add_background("fond.png")
     base_url = 'https://image.tmdb.org/t/p/original'
@@ -272,18 +273,15 @@ def accueil():
             with col:
                 st.image(base_url + movie['poster_path'])
                 st.button(f"Voir {movie['title']}", key=f"recommendation_{idx}", on_click= clik_film, args=[int(recommended_movies.iloc[[idx]].index[0])])
-
-
-
+                    
 def clik_film(index_movie):
     print(index_movie)
     st.session_state["index_movie"] = index_movie
           
 
-
 def match():
     # Charger les datasets
-    df_movies = pd.read_csv("last_df.csv").reset_index()
+    df_movies = pd.read_csv("last_df_bon.csv").reset_index()
     df_recommendations = pd.read_csv("df_20_000_recomandation.csv")
     base_url = 'https://image.tmdb.org/t/p/original'
 
@@ -421,7 +419,6 @@ def match():
     div.stButton > button::-moz-focus-inner {
         border: 0; /* Supprime les bordures internes par défaut sur Firefox */
     }
-    
     </style>
     """,
     unsafe_allow_html=True
@@ -1470,5 +1467,3 @@ def projet():
             </style>
             <hr>
             """, unsafe_allow_html=True)#ligne horizontale
-        
-
